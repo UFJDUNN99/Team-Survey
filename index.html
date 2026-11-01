@@ -13,12 +13,14 @@
       --border-color: #e2e8f0;
       --primary: #4f46e5;
       --primary-hover: #4338ca;
+      --success: #16a34a;
+      --warning: #d97706;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; line-height: 1.5; }
     .container { max-width: 1200px; margin: 0 auto; }
     
-    header { background: var(--card-bg); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 24px; text-align: center; }
+    header { background: var(--card-bg); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 24px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
     h1 { font-size: 24px; margin-bottom: 8px; color: var(--text-main); }
     p.subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 16px; }
 
@@ -28,6 +30,13 @@
     .team-btn { background: #f1f5f9; border: 2px solid transparent; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; text-align: center; transition: all 0.2s; color: var(--text-main); }
     .team-btn:hover { background: #e2e8f0; }
     .team-btn.active { border-color: var(--primary); background: #e0e7ff; color: var(--primary); }
+
+    /* Status Bar */
+    .progress-bar-container { background: #e2e8f0; border-radius: 999px; height: 10px; overflow: hidden; margin: 12px 0; }
+    .progress-bar-fill { background: var(--primary); height: 100%; width: 0%; transition: width 0.3s ease; }
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 600; font-size: 12px; margin-top: 8px; }
+    .status-badge.locked { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .status-badge.unlocked { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
 
     /* Tabs */
     .tabs { display: flex; gap: 8px; border-bottom: 2px solid var(--border-color); margin-bottom: 24px; }
@@ -42,9 +51,9 @@
     .q-title { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 16px; }
 
     /* Form Fields */
-    textarea { width: 100%; min-height: 80px; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; resize: vertical; margin-bottom: 10px; }
-    textarea:focus { outline: none; border-color: var(--primary); }
-    button.action-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    textarea { width: 100%; min-height: 85px; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; resize: vertical; margin-bottom: 10px; }
+    textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+    button.action-btn { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; }
     button.action-btn:hover { background: var(--primary-hover); }
 
     /* Results Grid */
@@ -52,12 +61,20 @@
     .resp-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; font-size: 13px; }
     .resp-name { font-weight: 700; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; color: var(--text-muted); }
     .resp-text { color: #334155; white-space: pre-wrap; }
-    .empty-text { color: #94a3b8; font-style: italic; }
+
+    /* Locked Box */
+    .locked-notice { background: #fffbeb; border: 2px dashed #f59e0b; border-radius: 12px; padding: 32px; text-align: center; margin: 24px 0; }
+    .locked-notice h2 { color: #b45309; font-size: 20px; margin-bottom: 8px; }
+    .locked-notice p { color: #92400e; font-size: 14px; max-width: 600px; margin: 0 auto; }
 
     /* Final Decision Box */
-    .eval-box { background: #f0fdf4; border: 1px dashed #22c55e; border-radius: 8px; padding: 12px; margin-top: 12px; }
+    .eval-box { background: #f0fdf4; border: 1px dashed #22c55e; border-radius: 8px; padding: 14px; margin-top: 12px; }
     .eval-title { font-size: 12px; font-weight: 700; color: #15803d; text-transform: uppercase; margin-bottom: 6px; }
     .eval-box textarea { background: #ffffff; border-color: #bbf7d0; }
+
+    /* Sync Area */
+    .sync-area { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+    .sync-area button { flex: 1; min-width: 200px; }
 
     /* Markdown Export */
     .md-preview { background: #0f172a; color: #f8fafc; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 13px; white-space: pre-wrap; overflow-x: auto; max-height: 400px; }
@@ -68,7 +85,7 @@
 <div class="container">
   <header>
     <h1>Event & Stage Planning Survey</h1>
-    <p class="subtitle">Select your name to fill in your answers, view group results side-by-side, and record agreed final decisions.</p>
+    <p class="subtitle">Answers are strictly hidden until all 4 team members complete all questions.</p>
     
     <div class="selector-title">Select Who You Are:</div>
     <div class="team-grid">
@@ -77,13 +94,26 @@
       <div class="team-btn" onclick="selectUser('Matt Prevett')">Matt Prevett</div>
       <div class="team-btn" onclick="selectUser('Kevin Day')">Kevin Day</div>
     </div>
-    <div id="user-status" style="font-size: 13px; font-weight: 600; color: var(--primary);">Currently editing as: None selected</div>
+    
+    <div id="user-status" style="font-size: 14px; font-weight: 600; color: var(--primary);">Currently editing as: None selected</div>
+
+    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+      <div style="font-size: 13px; font-weight: 600; color: var(--text-muted); display: flex; justify-content: space-between;">
+        <span>Group Completion Progress</span>
+        <span id="progress-text">0 / 36 Responses</span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progress-bar"></div>
+      </div>
+      <div id="lock-badge" class="status-badge locked">🔒 Survey Locked (Waiting for responses)</div>
+    </div>
   </header>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('input')">1. Enter Answers</button>
+    <button class="tab-btn active" onclick="switchTab('input')">1. My Questionnaire</button>
     <button class="tab-btn" onclick="switchTab('results')">2. Collated Results & Final Evaluation</button>
-    <button class="tab-btn" onclick="switchTab('export')">3. GitHub Markdown Export</button>
+    <button class="tab-btn" onclick="switchTab('sync')">3. Share / Sync Answers</button>
+    <button class="tab-btn" onclick="switchTab('export')">4. GitHub Markdown Export</button>
   </div>
 
   <!-- TAB 1: FORM INPUT -->
@@ -96,11 +126,35 @@
     <div id="results-container"></div>
   </div>
 
-  <!-- TAB 3: EXPORT -->
+  <!-- TAB 3: SYNC DATA -->
+  <div id="tab-sync" class="tab-content">
+    <div class="q-card">
+      <div class="q-title">Data Sharing & Sync</div>
+      <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">
+        Since this app runs in each user's browser, colleagues can copy their data code below and send it to you (via WhatsApp, Slack, or Email). Paste their code into the box to combine everyone's answers into your dashboard!
+      </p>
+      
+      <div style="margin-bottom: 20px;">
+        <label style="font-weight:700; font-size:13px; display:block; margin-bottom:6px;">Your Local Data Code (Copy to share with coordinator):</label>
+        <textarea id="my-export-code" readonly onclick="this.select()" style="font-family: monospace; font-size: 12px; height: 70px;"></textarea>
+        <button class="action-btn" onclick="copyDataCode()">Copy Data Code</button>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
+      <div>
+        <label style="font-weight:700; font-size:13px; display:block; margin-bottom:6px;">Import Colleague's Data Code:</label>
+        <textarea id="import-code-input" placeholder="Paste colleague's code here..." style="font-family: monospace; font-size: 12px; height: 70px;"></textarea>
+        <button class="action-btn" style="background:#16a34a;" onclick="importDataCode()">Import & Merge Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: EXPORT -->
   <div id="tab-export" class="tab-content">
     <div class="q-card">
-      <div class="q-title">GitHub Markdown Report</div>
-      <p style="margin-bottom: 12px; font-size: 14px; color: var(--text-muted);">Copy the text below to paste directly into a GitHub README.md or Issue.</p>
+      <div class="q-title">GitHub Markdown Summary</div>
+      <p style="margin-bottom: 12px; font-size: 14px; color: var(--text-muted);">Copy the text below to paste directly into a GitHub README.md or Issue after your meeting.</p>
       <button class="action-btn" onclick="copyMarkdown()" style="margin-bottom: 12px;">Copy Markdown</button>
       <div class="md-preview" id="markdown-output"></div>
     </div>
@@ -129,6 +183,47 @@
 
   function saveStore(data) {
     localStorage.setItem('survey_data', JSON.stringify(data));
+    updateProgress();
+  }
+
+  function isFullyCompleted() {
+    const store = getStore();
+    for (let u of users) {
+      if (!store.answers[u]) return false;
+      for (let i = 0; i < questions.length; i++) {
+        if (!store.answers[u][i] || store.answers[u][i].trim() === "") return false;
+      }
+    }
+    return true;
+  }
+
+  function updateProgress() {
+    const store = getStore();
+    let completedCount = 0;
+    const totalCount = users.length * questions.length;
+
+    users.forEach(u => {
+      if (store.answers[u]) {
+        questions.forEach((_, qIdx) => {
+          if (store.answers[u][qIdx] && store.answers[u][qIdx].trim() !== "") {
+            completedCount++;
+          }
+        });
+      }
+    });
+
+    const percent = Math.round((completedCount / totalCount) * 100);
+    document.getElementById('progress-bar').style.width = `${percent}%`;
+    document.getElementById('progress-text').innerText = `${completedCount} / ${totalCount} Responses (${percent}%)`;
+
+    const badge = document.getElementById('lock-badge');
+    if (completedCount === totalCount) {
+      badge.className = "status-badge unlocked";
+      badge.innerText = "🔓 All Responses Submitted - Results Unlocked!";
+    } else {
+      badge.className = "status-badge locked";
+      badge.innerText = `🔒 Locked - Waiting for ${totalCount - completedCount} more response(s)`;
+    }
   }
 
   function selectUser(name) {
@@ -149,6 +244,7 @@
     document.getElementById(`tab-${tab}`).classList.add('active');
 
     if (tab === 'results') renderResults();
+    if (tab === 'sync') renderSync();
     if (tab === 'export') renderMarkdown();
   }
 
@@ -157,7 +253,7 @@
     const store = getStore();
     
     if (!currentUser) {
-      container.innerHTML = `<div class="q-card" style="text-align:center; color: var(--text-muted);">Please select your name above to start answering questions.</div>`;
+      container.innerHTML = `<div class="q-card" style="text-align:center; color: var(--text-muted);">Please select your name above to start filling out your answers.</div>`;
       return;
     }
 
@@ -187,13 +283,38 @@
     const container = document.getElementById('results-container');
     const store = getStore();
 
+    if (!isFullyCompleted()) {
+      const missingList = users.map(u => {
+        let uCount = 0;
+        if (store.answers[u]) {
+          questions.forEach((_, qIdx) => {
+            if (store.answers[u][qIdx] && store.answers[u][qIdx].trim() !== "") uCount++;
+          });
+        }
+        return `<li><strong>${u}:</strong> ${uCount} of ${questions.length} completed</li>`;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="locked-notice">
+          <h2>🔒 Results Locked</h2>
+          <p>Answers will automatically be revealed side-by-side once all 4 members complete all 9 questions.</p>
+          <div style="margin-top:16px; text-align:left; max-width: 320px; margin: 16px auto 0 auto; background: #ffffff; padding: 16px; border-radius: 8px; border: 1px solid #fcd34d;">
+            <ul style="padding-left: 20px; font-size: 13px; line-height: 1.8;">
+              ${missingList}
+            </ul>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
     container.innerHTML = questions.map((q, idx) => {
       const respCards = users.map(u => {
-        const text = (store.answers[u] && store.answers[u][idx]) ? store.answers[u][idx] : '';
+        const text = store.answers[u][idx];
         return `
           <div class="resp-box">
             <div class="resp-name">${u}</div>
-            <div class="resp-text">${text ? text : '<span class="empty-text">No response submitted</span>'}</div>
+            <div class="resp-text">${text}</div>
           </div>
         `;
       }).join('');
@@ -206,7 +327,7 @@
           <div class="results-grid">${respCards}</div>
           <div class="eval-box">
             <div class="eval-title">Final Evaluation & Agreed Decision</div>
-            <textarea id="final_${idx}" placeholder="Record final decision post-meeting...">${finalVal}</textarea>
+            <textarea id="final_${idx}" placeholder="Record agreed decision after meeting...">${finalVal}</textarea>
             <button class="action-btn" style="background:#16a34a;" onclick="saveFinal(${idx})">Save Final Decision</button>
           </div>
         </div>
@@ -222,6 +343,43 @@
     alert('Final decision saved!');
   }
 
+  function renderSync() {
+    const store = getStore();
+    document.getElementById('my-export-code').value = JSON.stringify(store);
+  }
+
+  function copyDataCode() {
+    const el = document.getElementById('my-export-code');
+    el.select();
+    navigator.clipboard.writeText(el.value);
+    alert('Data code copied! Send this to your coordinator to merge.');
+  }
+
+  function importDataCode() {
+    const raw = document.getElementById('import-code-input').value.trim();
+    if (!raw) return alert('Please paste a data code first!');
+    try {
+      const imported = JSON.parse(raw);
+      const store = getStore();
+      
+      if (imported.answers) {
+        Object.keys(imported.answers).forEach(u => {
+          store.answers[u] = { ...store.answers[u], ...imported.answers[u] };
+        });
+      }
+      if (imported.finals) {
+        store.finals = { ...store.finals, ...imported.finals };
+      }
+
+      saveStore(store);
+      alert('Data successfully imported and merged!');
+      document.getElementById('import-code-input').value = '';
+      renderForm();
+    } catch(e) {
+      alert('Invalid data code pasted. Please make sure you copied the full text.');
+    }
+  }
+
   function renderMarkdown() {
     const store = getStore();
     let md = `# Event & Stage Planning - Final Report\n\n`;
@@ -229,7 +387,7 @@
     questions.forEach((q, idx) => {
       md += `### ${idx + 1}. ${q}\n\n`;
       users.forEach(u => {
-        const text = (store.answers[u] && store.answers[u][idx]) ? store.answers[u][idx] : '_No response_';
+        const text = (store.answers[u] && store.answers[u][idx]) ? store.answers[u][idx] : '_Pending submission_';
         md += `* **${u}:** ${text}\n`;
       });
       const finalVal = (store.finals && store.finals[idx]) ? store.finals[idx] : '_Pending final evaluation_';
@@ -245,7 +403,8 @@
     alert('Markdown copied to clipboard!');
   }
 
-  // Initialize
+  // Init
+  updateProgress();
   if (currentUser) selectUser(currentUser);
   else renderForm();
 </script>
