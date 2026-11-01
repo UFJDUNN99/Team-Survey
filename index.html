@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event & Stage Planning Questionnaire</title>
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; line-height: 1.5; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    header { background: var(--card-bg); padding: 24px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 24px; text-align: center; }
+    h1 { font-size: 24px; margin-bottom: 8px; color: var(--text-main); }
+    p.subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 16px; }
+
+    /* Profile Selector */
+    .selector-title { font-weight: 600; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .team-btn { background: #f1f5f9; border: 2px solid transparent; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; text-align: center; transition: all 0.2s; color: var(--text-main); }
+    .team-btn:hover { background: #e2e8f0; }
+    .team-btn.active { border-color: var(--primary); background: #e0e7ff; color: var(--primary); }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 8px; border-bottom: 2px solid var(--border-color); margin-bottom: 24px; }
+    .tab-btn { padding: 10px 20px; border: none; background: none; font-weight: 600; cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -2px; }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Cards */
+    .q-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .q-title { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 16px; }
+
+    /* Form Fields */
+    textarea { width: 100%; min-height: 80px; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; resize: vertical; margin-bottom: 10px; }
+    textarea:focus { outline: none; border-color: var(--primary); }
+    button.action-btn { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    button.action-btn:hover { background: var(--primary-hover); }
+
+    /* Results Grid */
+    .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .resp-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; font-size: 13px; }
+    .resp-name { font-weight: 700; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; color: var(--text-muted); }
+    .resp-text { color: #334155; white-space: pre-wrap; }
+    .empty-text { color: #94a3b8; font-style: italic; }
+
+    /* Final Decision Box */
+    .eval-box { background: #f0fdf4; border: 1px dashed #22c55e; border-radius: 8px; padding: 12px; margin-top: 12px; }
+    .eval-title { font-size: 12px; font-weight: 700; color: #15803d; text-transform: uppercase; margin-bottom: 6px; }
+    .eval-box textarea { background: #ffffff; border-color: #bbf7d0; }
+
+    /* Markdown Export */
+    .md-preview { background: #0f172a; color: #f8fafc; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 13px; white-space: pre-wrap; overflow-x: auto; max-height: 400px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>Event & Stage Planning Survey</h1>
+    <p class="subtitle">Select your name to fill in your answers, view group results side-by-side, and record agreed final decisions.</p>
+    
+    <div class="selector-title">Select Who You Are:</div>
+    <div class="team-grid">
+      <div class="team-btn" onclick="selectUser('James Dunn')">James Dunn</div>
+      <div class="team-btn" onclick="selectUser('Ben Wass')">Ben Wass</div>
+      <div class="team-btn" onclick="selectUser('Matt Prevett')">Matt Prevett</div>
+      <div class="team-btn" onclick="selectUser('Kevin Day')">Kevin Day</div>
+    </div>
+    <div id="user-status" style="font-size: 13px; font-weight: 600; color: var(--primary);">Currently editing as: None selected</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('input')">1. Enter Answers</button>
+    <button class="tab-btn" onclick="switchTab('results')">2. Collated Results & Final Evaluation</button>
+    <button class="tab-btn" onclick="switchTab('export')">3. GitHub Markdown Export</button>
+  </div>
+
+  <!-- TAB 1: FORM INPUT -->
+  <div id="tab-input" class="tab-content active">
+    <div id="questions-container"></div>
+  </div>
+
+  <!-- TAB 2: RESULTS & EVALUATION -->
+  <div id="tab-results" class="tab-content">
+    <div id="results-container"></div>
+  </div>
+
+  <!-- TAB 3: EXPORT -->
+  <div id="tab-export" class="tab-content">
+    <div class="q-card">
+      <div class="q-title">GitHub Markdown Report</div>
+      <p style="margin-bottom: 12px; font-size: 14px; color: var(--text-muted);">Copy the text below to paste directly into a GitHub README.md or Issue.</p>
+      <button class="action-btn" onclick="copyMarkdown()" style="margin-bottom: 12px;">Copy Markdown</button>
+      <div class="md-preview" id="markdown-output"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    "What stages should run on the Friday?",
+    "What stages should run on the Saturday?",
+    "What and how should the VIP area run, including site location, access to bar and main stage viewing area?",
+    "What stages/ areas do we want open or covered?",
+    "Are we going to use Rough Tempo?",
+    "What are thoughts on Container stage?",
+    "Are we going to have a fair ground/Rides?",
+    "What shall we do with the Vendors / Food area?",
+    "Do we need to have a full site layout rethink?"
+  ];
+
+  const users = ["James Dunn", "Ben Wass", "Matt Prevett", "Kevin Day"];
+  let currentUser = localStorage.getItem('survey_currentUser') || null;
+
+  function getStore() {
+    return JSON.parse(localStorage.getItem('survey_data')) || { answers: {}, finals: {} };
+  }
+
+  function saveStore(data) {
+    localStorage.setItem('survey_data', JSON.stringify(data));
+  }
+
+  function selectUser(name) {
+    currentUser = name;
+    localStorage.setItem('survey_currentUser', name);
+    document.querySelectorAll('.team-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.innerText === name);
+    });
+    document.getElementById('user-status').innerText = `Currently editing as: ${name}`;
+    renderForm();
+  }
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    event.target.classList.add('active');
+    document.getElementById(`tab-${tab}`).classList.add('active');
+
+    if (tab === 'results') renderResults();
+    if (tab === 'export') renderMarkdown();
+  }
+
+  function renderForm() {
+    const container = document.getElementById('questions-container');
+    const store = getStore();
+    
+    if (!currentUser) {
+      container.innerHTML = `<div class="q-card" style="text-align:center; color: var(--text-muted);">Please select your name above to start answering questions.</div>`;
+      return;
+    }
+
+    container.innerHTML = questions.map((q, idx) => {
+      const userAnswers = store.answers[currentUser] || {};
+      const val = userAnswers[idx] || '';
+      return `
+        <div class="q-card">
+          <div class="q-title">${idx + 1}. ${q}</div>
+          <textarea id="q_${idx}" placeholder="Type response for ${currentUser}...">${val}</textarea>
+          <button class="action-btn" onclick="saveAnswer(${idx})">Save Response</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function saveAnswer(idx) {
+    if (!currentUser) return alert('Select your name first!');
+    const store = getStore();
+    if (!store.answers[currentUser]) store.answers[currentUser] = {};
+    store.answers[currentUser][idx] = document.getElementById(`q_${idx}`).value;
+    saveStore(store);
+    alert('Answer saved!');
+  }
+
+  function renderResults() {
+    const container = document.getElementById('results-container');
+    const store = getStore();
+
+    container.innerHTML = questions.map((q, idx) => {
+      const respCards = users.map(u => {
+        const text = (store.answers[u] && store.answers[u][idx]) ? store.answers[u][idx] : '';
+        return `
+          <div class="resp-box">
+            <div class="resp-name">${u}</div>
+            <div class="resp-text">${text ? text : '<span class="empty-text">No response submitted</span>'}</div>
+          </div>
+        `;
+      }).join('');
+
+      const finalVal = (store.finals && store.finals[idx]) ? store.finals[idx] : '';
+
+      return `
+        <div class="q-card">
+          <div class="q-title">${idx + 1}. ${q}</div>
+          <div class="results-grid">${respCards}</div>
+          <div class="eval-box">
+            <div class="eval-title">Final Evaluation & Agreed Decision</div>
+            <textarea id="final_${idx}" placeholder="Record final decision post-meeting...">${finalVal}</textarea>
+            <button class="action-btn" style="background:#16a34a;" onclick="saveFinal(${idx})">Save Final Decision</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function saveFinal(idx) {
+    const store = getStore();
+    if (!store.finals) store.finals = {};
+    store.finals[idx] = document.getElementById(`final_${idx}`).value;
+    saveStore(store);
+    alert('Final decision saved!');
+  }
+
+  function renderMarkdown() {
+    const store = getStore();
+    let md = `# Event & Stage Planning - Final Report\n\n`;
+
+    questions.forEach((q, idx) => {
+      md += `### ${idx + 1}. ${q}\n\n`;
+      users.forEach(u => {
+        const text = (store.answers[u] && store.answers[u][idx]) ? store.answers[u][idx] : '_No response_';
+        md += `* **${u}:** ${text}\n`;
+      });
+      const finalVal = (store.finals && store.finals[idx]) ? store.finals[idx] : '_Pending final evaluation_';
+      md += `\n> **Final Decision:** ${finalVal}\n\n---\n\n`;
+    });
+
+    document.getElementById('markdown-output').innerText = md;
+  }
+
+  function copyMarkdown() {
+    const text = document.getElementById('markdown-output').innerText;
+    navigator.clipboard.writeText(text);
+    alert('Markdown copied to clipboard!');
+  }
+
+  // Initialize
+  if (currentUser) selectUser(currentUser);
+  else renderForm();
+</script>
+
+</body>
+</html>
