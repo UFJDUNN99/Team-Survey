@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-100 text-slate-800">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Planning & Stage Survey</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full font-sans antialiased flex flex-col bg-slate-100 text-slate-800 selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-slate-200 bg-white/90 backdrop-blur sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-sliders text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-slate-900">Event Planning Survey</h1>
+                    <p class="text-xs text-slate-500">Stage Setup & Site Review</p>
+                </div>
+            </div>
+
+            <!-- Header Action Buttons -->
+            <div class="flex items-center space-x-2">
+                <button onclick="exportToMarkdown()" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold transition shadow-sm">
+                    <i class="fa-brands fa-github text-base"></i>
+                    <span class="hidden sm:inline">Export for GitHub</span>
+                </button>
+                <button onclick="switchTab('share')" class="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs sm:text-sm font-semibold border border-indigo-200 transition">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span class="hidden md:inline">Sync & Share</span>
+                </button>
+                <button onclick="clearAllData()" class="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs sm:text-sm font-semibold border border-rose-200 transition" title="Reset All Data">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Banner / Instructions -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 shadow-md">
+            <div class="relative z-10 max-w-3xl">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-300 border border-brand-400/30 uppercase tracking-wider">Festival & Stage Planning</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold mt-3 mb-2">Team Questionnaire & Final Evaluation</h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Select who you are below to record your answers. Responses are saved automatically in your browser and collated in real-time under the <b>Results & Final Evaluation</b> tab for your group meeting.
+                </p>
+            </div>
+        </div>
+
+        <!-- Identity Selector Card -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-2 text-brand-600 font-bold text-sm uppercase tracking-wider">
+                    <i class="fa-solid fa-user-check"></i>
+                    <span>Step 1: Select Your Identity</span>
+                </div>
+                <span class="text-xs text-slate-400">Select card to enable form</span>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="identity-selector-group">
+                <!-- James Dunn -->
+                <div onclick="selectUser('James Dunn')" id="card-James-Dunn" class="user-card cursor-pointer relative flex items-center p-4 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-slate-100/80 hover:border-slate-300 transition">
+                    <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center font-bold text-sm mr-3 shrink-0">
+                        JD
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-slate-900 text-sm truncate">James Dunn</div>
+                        <div class="text-xs text-slate-500 badge-user" id="badge-James-Dunn">Pending</div>
+                    </div>
+                    <i class="fa-solid fa-circle-check text-brand-600 text-lg hidden check-icon"></i>
+                </div>
+
+                <!-- Ben Wass -->
+                <div onclick="selectUser('Ben Wass')" id="card-Ben-Wass" class="user-card cursor-pointer relative flex items-center p-4 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-slate-100/80 hover:border-slate-300 transition">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-300 flex items-center justify-center font-bold text-sm mr-3 shrink-0">
+                        BW
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-slate-900 text-sm truncate">Ben Wass</div>
+                        <div class="text-xs text-slate-500 badge-user" id="badge-Ben-Wass">Pending</div>
+                    </div>
+                    <i class="fa-solid fa-circle-check text-brand-600 text-lg hidden check-icon"></i>
+                </div>
+
+                <!-- Matt Prevett -->
+                <div onclick="selectUser('Matt Prevett')" id="card-Matt-Prevett" class="user-card cursor-pointer relative flex items-center p-4 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-slate-100/80 hover:border-slate-300 transition">
+                    <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center font-bold text-sm mr-3 shrink-0">
+                        MP
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-slate-900 text-sm truncate">Matt Prevett</div>
+                        <div class="text-xs text-slate-500 badge-user" id="badge-Matt-Prevett">Pending</div>
+                    </div>
+                    <i class="fa-solid fa-circle-check text-brand-600 text-lg hidden check-icon"></i>
+                </div>
+
+                <!-- Kevin Day -->
+                <div onclick="selectUser('Kevin Day')" id="card-Kevin-Day" class="user-card cursor-pointer relative flex items-center p-4 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-slate-100/80 hover:border-slate-300 transition">
+                    <div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-800 border border-cyan-300 flex items-center justify-center font-bold text-sm mr-3 shrink-0">
+                        KD
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-slate-900 text-sm truncate">Kevin Day</div>
+                        <div class="text-xs text-slate-500 badge-user" id="badge-Kevin-Day">Pending</div>
+                    </div>
+                    <i class="fa-solid fa-circle-check text-brand-600 text-lg hidden check-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Navigation Tabs -->
+        <div class="flex border-b border-slate-200 space-x-4 sm:space-x-6 text-sm font-semibold">
+            <button id="tab-btn-form" onclick="switchTab('form')" class="pb-3 border-b-2 border-brand-600 text-brand-600 flex items-center space-x-2">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>1. Fill Questionnaire</span>
+            </button>
+            <button id="tab-btn-results" onclick="switchTab('results')" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2">
+                <i class="fa-solid fa-square-poll-vertical"></i>
+                <span>2. Results & Final Evaluation</span>
+                <span id="tab-progress-badge" class="ml-1 px-2 py-0.5 rounded-full text-xs bg-slate-200 text-slate-700">0/4 Submitted</span>
+            </button>
+            <button id="tab-btn-share" onclick="switchTab('share')" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2">
+                <i class="fa-solid fa-file-export"></i>
+                <span>3. Import / Export Data</span>
+            </button>
+        </div>
+
+        <!-- TAB 1: QUESTIONNAIRE INPUT FORM -->
+        <div id="tab-content-form" class="space-y-6">
+            <div id="user-warning-box" class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 flex items-center space-x-3 text-sm shadow-sm">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600 text-lg shrink-0"></i>
+                <span>Please select your name above to unlock and fill out your survey answers.</span>
+            </div>
+
+            <div id="form-wrapper" class="space-y-6 opacity-40 pointer-events-none transition-all duration-300">
+                <div id="questions-form-container" class="space-y-6">
+                    <!-- Questions injected dynamically by JS -->
+                </div>
+
+                <div class="flex justify-end pt-4 pb-8">
+                    <button type="button" onclick="saveUserResponses()" class="px-7 py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold shadow-lg shadow-brand-500/20 flex items-center space-x-2 transition text-sm">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span>Save My Answers</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: RESULTS & FINAL EVALUATION DASHBOARD -->
+        <div id="tab-content-results" class="hidden space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <div class="flex items-center space-x-3 text-slate-700 text-sm">
+                    <i class="fa-solid fa-circle-info text-brand-600 text-lg shrink-0"></i>
+                    <span>Review responses side-by-side and record your team's <b>Final Decision</b> in the box at the bottom of each question.</span>
+                </div>
+                <button onclick="exportToMarkdown()" class="inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold transition shrink-0 shadow-sm">
+                    <i class="fa-brands fa-github"></i>
+                    <span>Copy Markdown Report</span>
+                </button>
+            </div>
+
+            <div id="results-dashboard-container" class="space-y-8">
+                <!-- Results cards injected dynamically by JS -->
+            </div>
+        </div>
+
+        <!-- TAB 3: DATA IMPORT & EXPORT -->
+        <div id="tab-content-share" class="hidden space-y-6">
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <h3 class="text-lg font-bold text-slate-900">Share Survey Data Between Colleagues</h3>
+                    <p class="text-sm text-slate-500 mt-1">Since this page runs offline without a backend database, team members can export their answers as text/file and send them to you to merge!</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Export Box -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-indigo-900 font-bold text-sm">
+                            <i class="fa-solid fa-download text-brand-600"></i>
+                            <span>1. Export All Survey Data (JSON)</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Copy or download all currently stored answers and final evaluations to send to your team lead.</p>
+                        <textarea id="export-json-area" readonly rows="6" class="w-full bg-white border border-slate-200 rounded-lg p-3 text-xs font-mono text-slate-800 focus:outline-none"></textarea>
+                        <div class="flex space-x-3">
+                            <button onclick="copyJsonData()" class="flex-1 py-2 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition">
+                                <i class="fa-solid fa-copy mr-1"></i> Copy JSON Text
+                            </button>
+                            <button onclick="downloadJsonFile()" class="flex-1 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs transition">
+                                <i class="fa-solid fa-file-arrow-down mr-1"></i> Download File
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Import Box -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
+                        <div class="flex items-center space-x-2 text-indigo-900 font-bold text-sm">
+                            <i class="fa-solid fa-upload text-brand-600"></i>
+                            <span>2. Import Colleague Data</span>
+                        </div>
+                        <p class="text-xs text-slate-600">Paste JSON text received from a colleague below to merge their responses into your dashboard.</p>
+                        <textarea id="import-json-area" rows="6" placeholder="Paste colleague JSON code here..." class="w-full bg-white border border-slate-200 rounded-lg p-3 text-xs font-mono text-slate-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"></textarea>
+                        <button onclick="importJsonData()" class="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition">
+                            <i class="fa-solid fa-file-import mr-1"></i> Import & Merge Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Notification -->
+    <div id="notification-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl transform scale-95 transition-transform duration-200" id="notification-card">
+            <div class="flex items-center space-x-3 text-emerald-600 mb-3">
+                <i class="fa-solid fa-circle-check text-2xl"></i>
+                <h3 class="text-lg font-bold text-slate-900" id="modal-title">Notification</h3>
+            </div>
+            <p class="text-slate-600 text-sm leading-relaxed mb-6" id="modal-message">Operation completed successfully.</p>
+            <button onclick="closeModal()" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition">
+                Dismiss
+            </button>
+        </div>
+    </div>
+
+    <!-- Application Engine -->
+    <script>
+        // Questions List
+        const QUESTIONS = [
+            { id: 1, text: "what stages should run on the Friday?" },
+            { id: 2, text: "what stages should run on the Saturday?" },
+            { id: 3, text: "what and how should the VIP area run, including site location, access to bar and main stage viewing area?" },
+            { id: 4, text: "What stages/ areas do we want open or covered?" },
+            { id: 5, text: "are we going to use Rough Tempo?" },
+            { id: 6, text: "What are thoughts on Container stage?" },
+            { id: 7, text: "are we going to have a fair ground/Rides?" },
+            { id: 8, text: "what shall we do with the Vendors / Food area?" },
+            { id: 9, text: "do we need to have a full site layout rethink?" }
+        ];
+
+        const TEAM = ["James Dunn", "Ben Wass", "Matt Prevett", "Kevin Day"];
+        const STORAGE_KEY = "event_survey_v3_data";
+
+        let currentUser = "";
+        let surveyStore = {
+            responses: {
+                "James Dunn": {},
+                "Ben Wass": {},
+                "Matt Prevett": {},
+                "Kevin Day": {}
+            },
+            evaluations: {} // key: questionId, value: final evaluation string
+        };
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+            renderFormQuestions();
+            renderResultsDashboard();
+            updateStatusBadges();
+            updateExportJsonArea();
+        });
+
+        // Local Storage Handling
+        function loadFromStorage() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    surveyStore.responses = Object.assign({
+                        "James Dunn": {}, "Ben Wass": {}, "Matt Prevett": {}, "Kevin Day": {}
+                    }, parsed.responses || {});
+                    surveyStore.evaluations = parsed.evaluations || {};
+                }
+            } catch (e) {
+                console.error("Failed loading survey data from localStorage", e);
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(surveyStore));
+            updateStatusBadges();
+            updateExportJsonArea();
+        }
+
+        // Select active user profile
+        function selectUser(userName) {
+            currentUser = userName;
+
+            // Highlight chosen user card
+            TEAM.forEach(name => {
+                const safeId = name.replace(/\s+/g, '-');
+                const card = document.getElementById(`card-${safeId}`);
+                if (!card) return;
+
+                const checkIcon = card.querySelector('.check-icon');
+                if (name === userName) {
+                    card.classList.add('border-brand-500', 'bg-brand-50', 'ring-2', 'ring-brand-500/20');
+                    card.classList.remove('border-slate-200', 'bg-slate-50');
+                    if (checkIcon) checkIcon.classList.remove('hidden');
+                } else {
+                    card.classList.remove('border-brand-500', 'bg-brand-50', 'ring-2', 'ring-brand-500/20');
+                    card.classList.add('border-slate-200', 'bg-slate-50');
+                    if (checkIcon) checkIcon.classList.add('hidden');
+                }
+            });
+
+            // Unlock questionnaire form
+            const warningBox = document.getElementById('user-warning-box');
+            const formWrapper = document.getElementById('form-wrapper');
+            if (warningBox) warningBox.classList.add('hidden');
+            if (formWrapper) formWrapper.classList.remove('opacity-40', 'pointer-events-none');
+
+            // Load existing answers into textareas
+            populateFormForUser(userName);
+        }
+
+        // Render questionnaire questions in Tab 1
+        function renderFormQuestions() {
+            const container = document.getElementById('questions-form-container');
+            if (!container) return;
+
+            container.innerHTML = QUESTIONS.map(q => `
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                    <label for="input-q-${q.id}" class="block text-base font-semibold text-slate-900 mb-3 flex items-start space-x-3">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold text-xs shrink-0 mt-0.5">
+                            ${q.id}
+                        </span>
+                        <span>${q.text}</span>
+                    </label>
+                    <textarea 
+                        id="input-q-${q.id}" 
+                        rows="3" 
+                        placeholder="Type your answer here..." 
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition resize-y"
+                    ></textarea>
+                </div>
+            `).join('');
+        }
+
+        // Fill form fields with selected user's answers
+        function populateFormForUser(userName) {
+            const userAnswers = surveyStore.responses[userName] || {};
+            QUESTIONS.forEach(q => {
+                const elem = document.getElementById(`input-q-${q.id}`);
+                if (elem) {
+                    elem.value = userAnswers[q.id] || "";
+                }
+            });
+        }
+
+        // Save active user responses
+        function saveUserResponses() {
+            if (!currentUser) {
+                showModal("Please Select Your Name", "Choose your identity card at the top before saving.");
+                return;
+            }
+
+            if (!surveyStore.responses[currentUser]) {
+                surveyStore.responses[currentUser] = {};
+            }
+
+            QUESTIONS.forEach(q => {
+                const elem = document.getElementById(`input-q-${q.id}`);
+                if (elem) {
+                    surveyStore.responses[currentUser][q.id] = elem.value.trim();
+                }
+            });
+
+            saveToStorage();
+            renderResultsDashboard();
+            showModal("Responses Saved!", `Your answers have been stored successfully for ${currentUser}.`);
+        }
+
+        // Render Side-by-Side Results & Final Evaluation Matrix
+        function renderResultsDashboard() {
+            const container = document.getElementById('results-dashboard-container');
+            if (!container) return;
+
+            container.innerHTML = QUESTIONS.map(q => {
+                const finalEval = surveyStore.evaluations[q.id] || "";
+
+                return `
+                <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-6">
+                    <!-- Question Header -->
+                    <div class="flex items-start space-x-3 border-b border-slate-100 pb-4">
+                        <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 flex items-center justify-center font-bold text-sm shrink-0">
+                            Q${q.id}
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 leading-snug">${q.text}</h3>
+                    </div>
+
+                    <!-- 4 Participant Response Cards Side-by-Side -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        ${TEAM.map(person => {
+                            const answer = surveyStore.responses[person] ? surveyStore.responses[person][q.id] : "";
+                            const isSubmitted = answer && answer.trim() !== "";
+                            const initials = person.split(' ').map(n=>n[0]).join('');
+
+                            let colorClass = person.includes("Dunn") ? "emerald" 
+                                           : person.includes("Wass") ? "indigo" 
+                                           : person.includes("Matt") ? "amber" : "cyan";
+
+                            return `
+                                <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-4 flex flex-col justify-between space-y-3">
+                                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-2.5">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-7 h-7 rounded-full bg-${colorClass}-100 text-${colorClass}-800 border border-${colorClass}-300 text-xs font-bold flex items-center justify-center">
+                                                ${initials}
+                                            </div>
+                                            <span class="text-xs font-bold text-slate-800">${person}</span>
+                                        </div>
+                                        ${isSubmitted 
+                                            ? `<span class="inline-flex items-center text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200"><i class="fa-solid fa-check text-[9px] mr-1"></i> Submitted</span>`
+                                            : `<span class="inline-flex items-center text-[10px] font-medium text-slate-400 bg-slate-200/60 px-2 py-0.5 rounded-full">Pending</span>`
+                                        }
+                                    </div>
+
+                                    <div class="text-xs text-slate-700 leading-relaxed font-normal whitespace-pre-wrap min-h-[60px]">
+                                        ${isSubmitted 
+                                            ? escapeHtml(answer) 
+                                            : `<span class="italic text-slate-400">No response submitted yet.</span>`
+                                        }
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+
+                    <!-- Post-Meeting Final Evaluation Box -->
+                    <div class="pt-2">
+                        <div class="bg-indigo-50/60 border border-indigo-200 rounded-xl p-4 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <label for="eval-box-${q.id}" class="text-xs font-bold uppercase tracking-wider text-indigo-950 flex items-center space-x-2">
+                                    <i class="fa-solid fa-gavel text-brand-600"></i>
+                                    <span>Final Evaluation & Agreed Decision</span>
+                                </label>
+                                <span class="text-[11px] text-slate-500 italic">Editable final consensus</span>
+                            </div>
+                            <textarea 
+                                id="eval-box-${q.id}" 
+                                rows="2" 
+                                oninput="saveEvaluation(${q.id}, this.value)"
+                                placeholder="Enter final agreed decision or team summary after meeting..." 
+                                class="w-full bg-white border border-indigo-200 rounded-lg p-3 text-slate-900 placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition resize-y shadow-sm"
+                            >${escapeHtml(finalEval)}</textarea>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // Save evaluation box text in real time
+        function saveEvaluation(qId, val) {
+            surveyStore.evaluations[qId] = val;
+            saveToStorage();
+        }
+
+        // Update status badges on top cards and tabs
+        function updateStatusBadges() {
+            let completedCount = 0;
+
+            TEAM.forEach(person => {
+                const answers = surveyStore.responses[person] || {};
+                const count = Object.values(answers).filter(a => a && a.trim() !== "").length;
+                if (count > 0) completedCount++;
+
+                const safeId = person.replace(/\s+/g, '-');
+                const badge = document.getElementById(`badge-${safeId}`);
+                if (badge) {
+                    if (count === QUESTIONS.length) {
+                        badge.textContent = "Complete (9/9)";
+                        badge.className = "text-xs font-bold text-emerald-600 badge-user";
+                    } else if (count > 0) {
+                        badge.textContent = `In Progress (${count}/9)`;
+                        badge.className = "text-xs font-bold text-amber-600 badge-user";
+                    } else {
+                        badge.textContent = "Pending Input";
+                        badge.className = "text-xs text-slate-400 badge-user";
+                    }
+                }
+            });
+
+            const tabBadge = document.getElementById('tab-progress-badge');
+            if (tabBadge) {
+                tabBadge.textContent = `${completedCount}/4 Submitted`;
+            }
+        }
+
+        // Switch between tabs
+        function switchTab(tab) {
+            const btnForm = document.getElementById('tab-btn-form');
+            const btnResults = document.getElementById('tab-btn-results');
+            const btnShare = document.getElementById('tab-btn-share');
+
+            const secForm = document.getElementById('tab-content-form');
+            const secResults = document.getElementById('tab-content-results');
+            const secShare = document.getElementById('tab-content-share');
+
+            // Reset tab styles
+            [btnForm, btnResults, btnShare].forEach(b => {
+                if (b) b.className = "pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center space-x-2";
+            });
+            [secForm, secResults, secShare].forEach(s => {
+                if (s) s.classList.add('hidden');
+            });
+
+            if (tab === 'form') {
+                btnForm.className = "pb-3 border-b-2 border-brand-600 text-brand-600 flex items-center space-x-2";
+                secForm.classList.remove('hidden');
+            } else if (tab === 'results') {
+                btnResults.className = "pb-3 border-b-2 border-brand-600 text-brand-600 flex items-center space-x-2";
+                secResults.classList.remove('hidden');
+            } else if (tab === 'share') {
+                btnShare.className = "pb-3 border-b-2 border-brand-600 text-brand-600 flex items-center space-x-2";
+                secShare.classList.remove('hidden');
+            }
+        }
+
+        // Export Markdown Report for GitHub
+        function exportToMarkdown() {
+            let md = `# Event Planning & Stage Survey Results\n\n`;
+            md += `**Date:** ${new Date().toLocaleDateString()}  \n`;
+            md += `**Participants:** ${TEAM.join(', ')}\n\n`;
+            md += `---\n\n`;
+
+            QUESTIONS.forEach(q => {
+                md += `### ${q.id}. ${q.text}\n\n`;
+                
+                TEAM.forEach(person => {
+                    const ans = (surveyStore.responses[person] && surveyStore.responses[person][q.id]) 
+                        ? surveyStore.responses[person][q.id].trim() 
+                        : "_No response submitted_";
+                    md += `* **${person}:** ${ans}\n`;
+                });
+
+                const finalEval = surveyStore.evaluations[q.id] ? surveyStore.evaluations[q.id].trim() : "_Pending final evaluation_";
+                md += `\n> **Final Evaluation & Agreed Decision:**\n> ${finalEval}\n\n`;
+                md += `---\n\n`;
+            });
+
+            copyTextToClipboard(md);
+            showModal("Markdown Exported!", "The full questionnaire report has been copied to your clipboard. You can paste this directly into a GitHub README.md or Issue.");
+        }
+
+        // JSON Data Sharing Features
+        function updateExportJsonArea() {
+            const area = document.getElementById('export-json-area');
+            if (area) {
+                area.value = JSON.stringify(surveyStore, null, 2);
+            }
+        }
+
+        function copyJsonData() {
+            const area = document.getElementById('export-json-area');
+            if (area) {
+                copyTextToClipboard(area.value);
+                showModal("JSON Copied!", "JSON payload copied to clipboard. Send this text to your colleague.");
+            }
+        }
+
+        function downloadJsonFile() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(surveyStore, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `event_survey_data_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importJsonData() {
+            const area = document.getElementById('import-json-area');
+            if (!area || !area.value.trim()) {
+                showModal("Import Error", "Please paste valid JSON data into the import box first.");
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(area.value.trim());
+                if (parsed.responses) {
+                    TEAM.forEach(person => {
+                        if (parsed.responses[person]) {
+                            surveyStore.responses[person] = Object.assign(surveyStore.responses[person] || {}, parsed.responses[person]);
+                        }
+                    });
+                }
+                if (parsed.evaluations) {
+                    surveyStore.evaluations = Object.assign(surveyStore.evaluations || {}, parsed.evaluations);
+                }
+
+                saveToStorage();
+                renderResultsDashboard();
+                if (currentUser) populateFormForUser(currentUser);
+                area.value = "";
+                showModal("Import Successful!", "Colleague response data has been merged into your dashboard.");
+            } catch(e) {
+                showModal("Invalid JSON", "Could not parse the pasted text. Make sure it is valid JSON syntax.");
+            }
+        }
+
+        // Reset All Survey Data
+        function clearAllData() {
+            if (confirm("Are you sure you want to clear all survey data and final decisions?")) {
+                localStorage.removeItem(STORAGE_KEY);
+                surveyStore = {
+                    responses: { "James Dunn": {}, "Ben Wass": {}, "Matt Prevett": {}, "Kevin Day": {} },
+                    evaluations: {}
+                };
+                renderFormQuestions();
+                renderResultsDashboard();
+                updateStatusBadges();
+                updateExportJsonArea();
+                showModal("Reset Complete", "All responses have been reset.");
+            }
+        }
+
+        // Helper: Escape HTML strings
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Helper: Copy text to clipboard
+        function copyTextToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        }
+
+        // Modal notification handlers
+        function showModal(title, msg) {
+            const modal = document.getElementById('notification-modal');
+            const card = document.getElementById('notification-card');
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = msg;
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('notification-modal');
+            const card = document.getElementById('notification-card');
+            modal.classList.add('opacity-0');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+    </script>
+</body>
+</html>
